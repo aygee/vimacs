@@ -285,7 +285,7 @@ command! UseF1ForNormal echoerr "Use F1 or <C-z> to return to Normal mode.  :hel
 " Insert mode <-> Normal mode <-> Command mode
 " 
 
-inoremap <M-x> <C-o>:
+inoremap <M-x> <Esc>:
 inoremap <M-:> <C-o>:
 inoremap <F1> <C-r>=<SID>NormalModeKey()<CR>
 inoremap <F2> <C-o>
@@ -329,7 +329,7 @@ inoremap <C-x><C-c> <C-o>:confirm qall<CR>
 " Files & Buffers
 "
 
-inoremap <C-x><C-f> <C-o>:hide edit<Space>
+inoremap <C-x><C-f> <C-r>=<SID>NormalModeKey()<CR>:hide edit<Space>
 inoremap <C-x><C-s> <C-o>:update<CR>
 inoremap <C-x>s <C-o>:wall<CR>
 inoremap <C-x>i <C-o>:read<Space>
@@ -351,6 +351,8 @@ inoremap <C-x><C-r> <C-o>:hide view<Space>
 
 inoremap <C-_> <C-o>u
 inoremap <C-x><C-u> <C-o>u
+" Redo key because vimacs does not undo the undo like
+inoremap <C-x><C-y> <C-o><C-r>
 "lots of other stuff :(
 
 
@@ -758,9 +760,10 @@ inoremap <C-^> <C-y>
 inoremap <M-r> <C-r>=
 
 "" Aborting
-cnoremap <C-g> <C-c>
+cnoremap <C-g> <C-c><Esc>:startinsert<CR> "" Back to insert mode
 onoremap <C-g> <C-c>
-
+nnoremap <C-g> <C-g>i
+inoremap <C-g> <C-o><C-g>
 
 "
 " Killing and Deleting
@@ -1130,7 +1133,8 @@ inoremap <C-x>2 <C-o><C-w>s
 inoremap <C-x>3 <C-o><C-w>v
 inoremap <C-x>0 <C-o><C-w>c
 inoremap <C-x>1 <C-o><C-w>o
-inoremap <silent> <C-x>o <Esc><C-w>w:if &insertmode \| startinsert \| endif \| redraw<CR>
+"BUGGED: inoremap <silent> <C-x>o <Esc><C-w>w:if &insertmode \| startinsert \| endif \| redraw<CR>
+inoremap <C-x>o <C-o><C-w>w
 " <C-x>O is not defined in Emacs ...
 inoremap <C-x>O <C-o><C-w>W
 inoremap <silent> <C-Tab> <Esc><C-w>w:if &insertmode \| startinsert \| endif \| redraw<CR>
@@ -1215,7 +1219,7 @@ inoremap <M-c> <C-o>gUl<C-o>w
 "
 
 inoremap <C-x>b <C-r>=<SID>BufExplorerOrBufferList()<CR>
-inoremap <C-x><C-b> <C-o>:buffers<CR>
+inoremap <C-x><C-b> <C-r>=<SID>NormalModeKey()<CR>:buffers<CR>:buffer<Space>
 inoremap <C-x>k <C-o>:bdelete<Space>
 
 "" Integration with the BufExplorer plugin.  Phear :)  (I so love <C-r>=)
@@ -1336,20 +1340,20 @@ inoremap <C-l> <C-o>zz<C-o><C-l>
 " Folding
 "
 
-" I've changed the folding prefix <C-x>@to <C-x><C-x>, because <C-x>@ sucks
-" <C-x><C-x><C-r> does the folding operation recursively
-inoremap <C-x><C-x><C-w> <C-o>zM
-inoremap <C-x><C-x><C-x> <C-o>zc
-inoremap <C-x><C-x><C-r><C-x> <C-o>zC
-inoremap <C-x><C-x><C-s> <C-o>zo
-inoremap <C-x><C-x><C-r><C-s> <C-o>zO
-inoremap <C-x><C-x>s <C-o>zR
-inoremap <C-x><C-x>1s <C-o>zr
-inoremap <C-x><C-x><C-q> <C-o>za
-inoremap <C-x><C-x><C-r><C-q> <C-o>zA
-inoremap <C-x><C-x>q <C-o>zM
-inoremap <C-x><C-x>1q <C-o>zm
-
+" I've changed the folding prefix <C-x><C-x> to <M-l> because <C-x><C-x> makes my fingers cramp
+" <M-l><M-r> does the folding operation recursively
+inoremap <M-l><M-w> <C-o>zM
+inoremap <M-l><M-x> <C-o>zc
+inoremap <M-l><M-r><M-x> <C-o>zC
+inoremap <M-l><M-s> <C-o>zo
+inoremap <M-l><M-r><M-s> <C-o>zO
+inoremap <M-l>s <C-o>zR
+inoremap <M-l>1s <C-o>zr
+inoremap <M-l><M-q> <C-o>za
+inoremap <M-l><M-r><M-q> <C-o>zA
+inoremap <M-l>q <C-o>zM
+inoremap <M-l>1q <C-o>zm
+vnoremap <M-l><M-f> zF
 
 "
 " Enable menus in the console (like GNU Emacs)
